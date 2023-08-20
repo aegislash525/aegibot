@@ -3,15 +3,14 @@ package org.rathercruel.bot.main;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.rathercruel.bot.commands.Clear;
+import org.rathercruel.bot.commands.JoinToCreate;
 import org.rathercruel.bot.commands.RoleManagement;
 import org.rathercruel.bot.event.Events;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +55,10 @@ public class BotConfiguration {
             "A wild [member] appeared."
     };
 
+    // Join to create:
+    public static final Long joinToCreateChannelID = 1142836675983179898L;
+
+    public static final Long joinToCreateCategoryID = 1142836639576629461L;
 
 
     // ROLES:
@@ -124,14 +127,14 @@ public class BotConfiguration {
     // Server's online draw channel ID:
 //    public static final long joinToCreate = 1137783472627392584L;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         JDA jda = jdaBuilder
                 .setActivity(Activity.watching("je moeder neemt een douche."))
                 .addEventListeners(
                         new Clear(),
                         new Events(),
-//                        new JoinToCreate(),
+                        new JoinToCreate(),
                         new RoleManagement()
 //                        new EmbedStats()
                 )

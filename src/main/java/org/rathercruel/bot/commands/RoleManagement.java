@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,9 +19,11 @@ public class RoleManagement extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getChannel().asTextChannel().getIdLong() == BotConfiguration.roleChannelID) {
-            for (int i = 0; i < BotConfiguration.reactionsRoles.size(); i++) {
-                event.getMessage().addReaction(BotConfiguration.emojiArrayList.get(i)).queue();
+        if (event.getChannel().getType() != ChannelType.VOICE) {
+            if (event.getChannel().asTextChannel().getIdLong() == BotConfiguration.roleChannelID) {
+                for (int i = 0; i < BotConfiguration.reactionsRoles.size(); i++) {
+                    event.getMessage().addReaction(BotConfiguration.emojiArrayList.get(i)).queue();
+                }
             }
         }
     }
