@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class JoinToCreate extends ListenerAdapter {
 
+    private int vcCreatedInt = 0;
+
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         AudioChannel audioChannel = event.getChannelJoined();
@@ -25,8 +27,8 @@ public class JoinToCreate extends ListenerAdapter {
         Member member = event.getMember();
 
         if (audioChannel != null) {
+//            vcCreatedInt++;
             long channelID = audioChannel.getIdLong();
-
             List<Long> allow = new ArrayList<>();
             allow.add(Permission.ALL_CHANNEL_PERMISSIONS);
             long test = Permission.ALL_CHANNEL_PERMISSIONS;
@@ -39,6 +41,8 @@ public class JoinToCreate extends ListenerAdapter {
                 });
             }
         } else {
+//            vcCreatedInt--;
+
             // REMOVE EMPTY VC
             Category category = event.getGuild().getCategoryById(BotConfiguration.joinToCreateCategoryID);
             List<VoiceChannel> vcList = category.getVoiceChannels();
@@ -49,5 +53,7 @@ public class JoinToCreate extends ListenerAdapter {
                 }
             }
         }
+//        guild.getVoiceChannelById(BotConfiguration.guildVoiceChannelCount)
+//                .getManager().setName("\uD83C\uDF3F VC created: " + vcCreatedInt).queue();
     }
 }
