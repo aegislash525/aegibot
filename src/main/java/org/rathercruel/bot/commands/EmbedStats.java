@@ -39,7 +39,7 @@ public class EmbedStats extends ListenerAdapter {
                 eb.addField("Voice-Chat level: ", "0", false);
                 eb.addField("Date: ", dtf.format(now), false);
                 eb.setImage(user.getAvatarUrl());
-                eb.setColor(BotConfiguration.colour);
+                eb.setColor(BotConfiguration.embedColor);
                 System.out.println(event.getUser().getName() + " asked for stats of " + user.getName() + ".");
                 event.replyEmbeds(eb.build()).queue();
                 eb.clear();
@@ -50,7 +50,7 @@ public class EmbedStats extends ListenerAdapter {
                 eb.addField("Name: ", user.getName(), false);
                 eb.addField("Date: ", dtf.format(now), false);
                 eb.setImage(user.getAvatarUrl());
-                eb.setColor(BotConfiguration.colour);
+                eb.setColor(BotConfiguration.embedColor);
                 System.out.println(event.getUser().getName() + " asked for stats of a bot [" + user.getName() + "].");
                 event.replyEmbeds(eb.build()).queue();
                 eb.clear();

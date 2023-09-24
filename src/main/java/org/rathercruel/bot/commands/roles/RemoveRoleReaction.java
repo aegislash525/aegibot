@@ -1,13 +1,9 @@
 package org.rathercruel.bot.commands.roles;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,28 +18,30 @@ import java.util.Scanner;
 /**
  * @author Rather Cruel
  */
-public class SetRoleMessage extends ListenerAdapter {
+public class RemoveRoleReaction extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equalsIgnoreCase("set-message-reactions")) {
+        if (event.getName().equalsIgnoreCase("remove-message-reactions")) {
             Guild guild = event.getGuild();
             boolean hasNoPermissions = true;
             for (int i = 0; i < BotConfiguration.moderatorRoleIDs.size(); i++) {
                 if (event.getMember().getRoles().contains(guild.getRoleById(BotConfiguration.moderatorRoleIDs.get(i)))) {
                     i = BotConfiguration.moderatorRoleIDs.size();
                     String reaction = event.getOption("reaction").getAsString();
-                    String role = event.getOption("role").getAsRole().getId();
                     String messageID = event.getOption("message-id").getAsString();
 
                     TextChannel channel = event.getChannel().asTextChannel();
                     Emoji emoji = Emoji.fromFormatted(reaction);
 
-                    channel.addReactionById(messageID, emoji).queue();
-                    event.reply("Added " + emoji.getAsReactionCode() + " for " +
-                            event.getGuild().getRoleById(role).getAsMention() + ".").setEphemeral(true).queue();
+                    channel.removeReactionById(messageID, emoji).queue();
+                    event.reply("Removed " + emoji.getAsReactionCode() + " for " +
+                            event.getGuild().getRoleById(BotConfiguration.emojiRoles.get(emoji)).getAsMention() + ".").setEphemeral(true).queue();
 
-                    BotConfiguration.emojiRoles.put(emoji, Long.parseLong(role));
+                    System.out.println(emoji.getFormatted() + ": " +
+                            event.getGuild().getRoleById(BotConfiguration.emojiRoles.get(emoji)).getName() + " has been removed from JSON");
+
+                    BotConfiguration.emojiRoles.remove(emoji);
                     StringBuilder sb = new StringBuilder();
                     String dir = System.getProperty("user.dir");
                     File file = new File(dir + "\\config.json");
@@ -60,12 +58,16 @@ public class SetRoleMessage extends ListenerAdapter {
                     JSONObject data = object.getJSONObject("bot_data");
                     JSONObject reactRoles = data.getJSONObject("roles").getJSONObject("react_roles");
                     JSONArray roleArr = reactRoles.getJSONArray("roles");
-                    JSONObject jsonRole = new JSONObject();
-                    jsonRole.put("emoji", emoji.getFormatted());
-                    jsonRole.put("id", Long.parseLong(role));
 
-                    System.out.println(emoji.getFormatted() + ": " + event.getGuild().getRoleById(role).getName() + " has been added to JSON");
-                    roleArr.put(jsonRole);
+                    for (int j = 0; j < roleArr.toList().size(); j++) {
+                        JSONObject role = roleArr.getJSONObject(j);
+                        String roleEmoji = role.getString("emoji");
+                        if (roleEmoji.equals(emoji.getFormatted())) {
+                            roleArr.remove(j);
+                            j = roleArr.toList().size();
+                        }
+                    }
+
                     try {
                         JsonConfig jsonConfig = new JsonConfig();
                         jsonConfig.update(object);
@@ -79,25 +81,6 @@ public class SetRoleMessage extends ListenerAdapter {
                 String errorMessage = BotConfiguration.noPermissionMessage;
                 event.reply(errorMessage.replace("[member]", event.getMember().getAsMention()))
                         .setEphemeral(true).queue();
-            }
-        }
-    }
-
-    @Override
-    public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        if (BotConfiguration.giveRoleOnReact) {
-            User user = event.getUser();
-            Member member = event.getMember();
-            Guild guild = event.getGuild();
-            Emoji userReaction = event.getReaction().getEmoji().asUnicode();
-            Role role = guild.getRoleById(BotConfiguration.emojiRoles.get(userReaction));
-
-            if (!user.isBot()) {
-                if (!member.getRoles().contains(role))
-                    guild.addRoleToMember(member, role).queue();
-                else
-                    guild.removeRoleFromMember(member, role).queue();
-                event.getReaction().removeReaction(user).queue();
             }
         }
     }
