@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.rathercruel.bot.commands.Clear;
+import org.rathercruel.bot.commands.ClearReactions;
 import org.rathercruel.bot.commands.JoinToCreate;
 import org.rathercruel.bot.commands.roles.RemoveRoleReaction;
 import org.rathercruel.bot.commands.roles.RoleManagement;
@@ -23,10 +24,11 @@ import java.util.List;
  * @author Rather Cruel
  */
 public class BotConfiguration {
-    public static String token = "";
+    public static String token = "token";
+    public static String statusMessage = "status message";
     public static String botName = "UNKNOWN";
     public static String botVersion = "0.0";
-    public static String wrongChannelMessage = "";
+    public static String wrongChannelMessage = "wrong channel";
     public static String noPermissionMessage = "[member] You have no permissions to use this command!";
     public static long guildID = 0;
     public static long botChannel = 0;
@@ -48,11 +50,12 @@ public class BotConfiguration {
     public static List<Long> boosterRoleIDs = new ArrayList<>();
     public static List<String> greetingMessages = new ArrayList<>();
     public static HashMap<Emoji, Long> emojiRoles = new HashMap<>();
+    public static BotActivity botActivity = BotActivity.WATCHING;
 
     private static boolean success = false;
     public static void main(String[] args) throws InterruptedException {
         String dir = System.getProperty("user.dir");
-        File file = new File(dir + "\\config.json");
+        File file = new File(dir + "/config.json");
         System.out.println("Directory=\"" + file.getPath() + "\"");
         System.out.println("Config exists=\"" + file.exists() + "\"");
 
@@ -73,14 +76,19 @@ public class BotConfiguration {
         if (success) {
             JDABuilder jdaBuilder = JDABuilder.createDefault(token);
             JDA jda = jdaBuilder
-                    .setActivity(Activity.watching("je moeder neemt een douche."))
+                    .setActivity(switch (botActivity) {
+                        case WATCHING -> Activity.watching(statusMessage);
+                        case PLAYING -> Activity.playing(statusMessage);
+                        case LISTENING -> Activity.listening(statusMessage);
+                    })
                     .addEventListeners(
                             new Clear(),
                             new Events(),
                             new JoinToCreate(),
                             new RoleManagement(),
                             new SetRoleMessage(),
-                            new RemoveRoleReaction()
+                            new RemoveRoleReaction(),
+                            new ClearReactions()
                     )
                     .enableIntents(
                             GatewayIntent.GUILD_MEMBERS,
@@ -92,16 +100,21 @@ public class BotConfiguration {
                     .build().awaitReady();
 
             jda.upsertCommand("clear", "clears the chat")
-                    .addOption(OptionType.INTEGER, "number", "How many messages to delete").queue();
+                    .addOption(OptionType.INTEGER, "number", "how many messages to delete").queue();
 
             jda.upsertCommand("set-message-reactions", "sets reactions on a specific message")
                     .addOption(OptionType.STRING, "reaction", "the reaction to put")
                     .addOption(OptionType.ROLE, "role", "mention the role to give")
-                    .addOption(OptionType.STRING, "message-id", "ID of the specific message").queue();
+                    .addOption(OptionType.STRING, "message-id", "ID of a specific message").queue();
 
-            jda.upsertCommand("remove-message-reactions", "sets reactions on a specific message")
+            jda.upsertCommand("remove-message-reactions", "removes reactions of a specific message from JSON config.")
                     .addOption(OptionType.STRING, "reaction", "the reaction to put")
-                    .addOption(OptionType.STRING, "message-id", "ID of the specific message").queue();
+                    .addOption(OptionType.STRING, "message-id", "ID of a specific message").queue();
+
+            jda.upsertCommand("clear-message-reactions", "removes all reactions on a specific message but not from JSON config")
+                    .addOption(OptionType.STRING, "message-id", "message ID")
+                    .queue();
+
             jda.updateCommands().queue();
         }
     }

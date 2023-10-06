@@ -20,6 +20,8 @@ public class JsonConfig {
         Map<String, Object> object = new HashMap<>() {
             {
                 put("token", "your token here");
+                put("activity_type", "watching, playing, listening");
+                put("status_message", "your status text here");
                 put("bot_name", "your bot name here");
                 put("bot_version", "1.9");
                 put("guild_id", 0);
@@ -131,6 +133,16 @@ public class JsonConfig {
         }
         JSONObject data = new JSONObject(sb.toString()).getJSONObject("bot_data");
         BotConfiguration.token = data.getString("token");
+        BotConfiguration.statusMessage = data.getString("status_message");
+
+        String botActivityType = data.getString("activity_type");
+        BotConfiguration.botActivity = switch (botActivityType) {
+            case "watching" -> BotActivity.WATCHING;
+            case "playing" -> BotActivity.PLAYING;
+            case "listening" -> BotActivity.LISTENING;
+            default -> throw new IllegalStateException("Unexpected value: " + botActivityType);
+        };
+
         BotConfiguration.botName = data.getString("bot_name");
         BotConfiguration.botVersion = data.getString("bot_version");
         BotConfiguration.guildID = data.getLong("guild_id");

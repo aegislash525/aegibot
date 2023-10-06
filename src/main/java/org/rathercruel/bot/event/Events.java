@@ -26,6 +26,8 @@ public class Events extends ListenerAdapter {
         System.out.flush();
         System.out.println("[READY] " +
                 "Name: " + BotConfiguration.botName + " | Version: " + BotConfiguration.botVersion);
+        System.out.println("Status type: " + BotConfiguration.botActivity.toString() +
+                " | text: " + BotConfiguration.statusMessage);
 
         if (BotConfiguration.showStats) {
             Timer timer = new Timer();
