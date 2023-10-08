@@ -1,0 +1,80 @@
+{"bot_data": {
+     "technical_channel": 1131934552504401938,
+     "bot_name": "name",
+     "activity_type": "watching/listening/playing",
+     "status_message": "activity text",
+     "embed_color": "ff4a4a",
+     "message_config": {
+          "no_permission_msg": "[member] You have no permissions to use this command!",
+          "greetings": [
+               {"message": "[member] just joined the server."},
+               {"message": "Never gonna give [member] up. Never let [member] down!"},
+               {"message": "Hey! Listen! [member] has joined!"},
+               {"message": "[member] has joined THE FIRST GALACTIC EMPIRE!"},
+               {"message": "We've been expecting you, [member]."},
+               {"message": "It's dangerous to go alone, take [member]!"},
+               {"message": "Swoooosh. [member] just landed."},
+               {"message": "A wild [member] appeared."}
+          ],
+          "wrong_chat_msg": "You should use #vc-context"
+     },
+     "roles": {
+          "react_roles": {
+               "roles": [
+                    {
+                         "emoji": "U+1F3B1",
+                         "id": 1142567728926969988
+                    },
+                    {
+                         "emoji": "🩻",
+                         "id": 1143838167095595068
+                    },
+                    {
+                         "emoji": "U+1F3A9",
+                         "id": 1140617652511985684
+                    },
+                    {
+                         "emoji": "U+1F47E",
+                         "id": 1140617368960245851
+                    },
+                    {
+                         "emoji": "🗺️",
+                         "id": 1143858617318117508
+                    }
+               ],
+               "channel": 1142403621330366474,
+               "enabled": true
+          },
+          "member_join": {
+               "roles": [
+                    {"id": 1114251035511361568},
+                    {"id": 1114251143485333604},
+                    {"id": 1112721761633583205}
+               ],
+               "enabled": true
+          },
+          "boosters": {
+               "roles": [{"id": 1152553512585142362}],
+               "enabled": true
+          },
+          "moderators": {"roles": [
+               {"id": 1112472571888275496},
+               {"id": 1112721554946658364}
+          ]}
+     },
+     "guild_id": 1112471560394117311,
+     "server_stats": {
+          "guild_online": 1152545007279013980,
+          "guild_custom_vc": 1152544711840637018,
+          "show_stats": true,
+          "guild_total": 1143154347417554995
+     },
+     "join_to_create": {
+          "channel": 1142836675983179898,
+          "category": 1142836639576629461,
+          "enabled": true
+     },
+     "bot_version": "1.9",
+     "default_channel": 1112471561266544692,
+     "token": "token"
+}}
